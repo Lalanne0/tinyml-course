@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  mcunet:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: mcunet-course
+    ports:
+      - "8888:8888"
+    volumes:
+      - ../notebooks:/workspace/notebooks
+      - ../solutions:/workspace/solutions:ro
+      - ../scripts:/workspace/scripts:ro
+    restart: unless-stopped
