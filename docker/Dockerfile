@@ -6,8 +6,10 @@ LABEL description="Environnement Docker pour le cours TinyML avec MCUNet"
 # Eviter les prompts interactifs
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
+# matplotlib sans ecran (container headless) : on ecrit des fichiers PNG
+ENV MPLBACKEND=Agg
 
-# Dependances systeme
+# Dependances systeme (nano + vim pour que les apprenants editent les scripts)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     unzip \
@@ -15,6 +17,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libgl1 \
     libglib2.0-0 \
+    nano \
+    vim \
+    less \
     && rm -rf /var/lib/apt/lists/*
 
 # Versions Python pinees pour compatibilite TensorFlow 1.15
@@ -36,13 +41,11 @@ RUN pip install --no-cache-dir \
     torchvision==0.10.0+cpu \
     -f https://download.pytorch.org/whl/cpu/torch_stable.html
 
-# Outils Python supplementaires
+# Outils Python supplementaires (plus de Jupyter : le cours est en scripts .py)
 RUN pip install --no-cache-dir \
     pillow \
     matplotlib \
     pandas \
-    jupyterlab \
-    ipywidgets \
     thop
 
 # Cloner MCUNet et installer en mode editable
@@ -77,7 +80,7 @@ for net_id in ['mcunet-vww0', 'mcunet-vww1', 'mcunet-vww2', 'mcunet-in2', 'mcune
 
 # Creer des alias pour les modeles TFLite avec des noms lisibles
 # MCUNet stocke dans ~/.torch/mcunet/ avec des noms internes (ex: mcunet-5fps_vww)
-# Les notebooks referencent ~/.mcunet/<net_id>.tflite
+# Les exercices referencent ~/.mcunet/<net_id>.tflite
 RUN mkdir -p /root/.mcunet && \
     ln -s /root/.torch/mcunet/mcunet-10fps_vww.tflite /root/.mcunet/mcunet-vww0.tflite && \
     ln -s /root/.torch/mcunet/mcunet-5fps_vww.tflite /root/.mcunet/mcunet-vww1.tflite && \
@@ -88,16 +91,17 @@ RUN mkdir -p /root/.mcunet && \
 # Installer les dependances TinyEngine (flatbuffers pour le parser tflite)
 RUN pip install --no-cache-dir flatbuffers==2.0
 
-# Copier les scripts utilitaires
+# Copier les scripts utilitaires, les exercices, les solutions et le guide.
+# Note : exercices et solutions sont aussi montes en volume par docker-compose,
+# le montage prend le dessus a l'execution (edition persistee sur l'hote).
 COPY scripts/ /workspace/scripts/
+COPY exercises/ /workspace/exercises/
+COPY solutions/ /workspace/solutions/
+COPY START_HERE.txt /workspace/START_HERE.txt
 
-EXPOSE 8888
+# Afficher le guide de demarrage a chaque ouverture d'un shell interactif
+RUN echo 'cat /workspace/START_HERE.txt 2>/dev/null || true' >> /root/.bashrc
 
-CMD ["jupyter", "lab", \
-     "--ip=0.0.0.0", \
-     "--port=8888", \
-     "--no-browser", \
-     "--allow-root", \
-     "--NotebookApp.token=''", \
-     "--NotebookApp.password=''", \
-     "--notebook-dir=/workspace"]
+# Le container reste actif en arriere-plan ; les apprenants s'y connectent
+# avec `make shell` (docker compose exec ... bash).
+CMD ["sleep", "infinity"]

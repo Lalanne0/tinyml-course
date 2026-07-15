@@ -6,10 +6,15 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
     container_name: mcunet-course
-    ports:
-      - "8888:8888"
+    # Le cours se fait desormais en scripts Python (plus de JupyterLab / port 8888).
+    # On se connecte au container avec `make shell`.
     volumes:
-      - ../notebooks:/workspace/notebooks
+      # Exercices editables par l'apprenant (nano dans le container ou editeur hote) :
+      - ../exercises:/workspace/exercises
+      # Solutions en lecture seule :
       - ../solutions:/workspace/solutions:ro
+      # Scripts utilitaires en lecture seule :
       - ../scripts:/workspace/scripts:ro
+      # Figures generees par les exercices, recuperables sur l'hote :
+      - ../outputs:/workspace/outputs
     restart: unless-stopped

@@ -1,0 +1,38 @@
+
+================================================================================
+   Deploiement TinyML avec MCUNet  --  COMMENCE ICI
+================================================================================
+
+  Vous êtes dans le container Docker du cours. Tout est deja installe.
+
+  Les exercices sont des scripts Python, a faire DANS L'ORDRE :
+
+     exercises/00_setup_check.py         Verifier l'environnement      (10 min)
+     exercises/01_explore_model_zoo.py   Explorer le Model Zoo         (30 min)
+     exercises/02_inference_python.py    Inference TFLite int8         (45 min)
+     exercises/03_compare_vs_mobilenet.py  MCUNet vs MobileNetV2       (45 min)
+     exercises/04_deployment_check.py    Analyse de deploiement        (40 min)
+     exercises/05_what_if_it_doesnt_fit.py  Le modele ne rentre pas    (30 min)
+
+  --------------------------------------------------------------------------
+   BOUCLE DE TRAVAIL POUR CHAQUE EXERCICE
+  --------------------------------------------------------------------------
+   1. Lancer :             python exercises/00_setup_check.py
+   2. S'il affiche un bandeau "TODO A COMPLETER", editer le fichier :
+                          nano exercises/00_setup_check.py
+      (Ctrl+O = sauver, Ctrl+X = quitter nano)
+   3. Completer le bloc marque  # ===== TODO =====  puis relancer.
+   4. Quand c'est bon, le script vous indique l'exercice suivant.
+
+  --------------------------------------------------------------------------
+   INFOS UTILES
+  --------------------------------------------------------------------------
+   - Bloque ? Les corrections completes sont dans  solutions/
+        (ex :  python solutions/00_setup_check.py )
+   - Les figures generees sont ecrites dans  outputs/  (visibles sur votre
+     machine hote, dans le dossier du projet).
+   - Editeurs disponibles : nano (simple) ou vim.
+   - Pour re-afficher ce message :  cat /workspace/START_HERE.txt
+
+  A faire des maintenant :   python exercises/00_setup_check.py
+================================================================================

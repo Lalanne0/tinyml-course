@@ -1,25 +1,33 @@
-.PHONY: start stop check clean logs
+.PHONY: start shell run check stop clean logs
 
 COMPOSE_FILE := docker/docker-compose.yml
+EX ?= 00
 
 start:
 	docker compose -f $(COMPOSE_FILE) up -d --build
 	@echo ""
-	@echo "============================================"
-	@echo "  JupyterLab est accessible sur :"
-	@echo "  http://localhost:8888"
-	@echo "============================================"
+	@echo "============================================================"
+	@echo "  Container pret."
+	@echo "  Se connecter avec :   make shell"
+	@echo "  Puis lancer :         python exercises/00_setup_check.py"
+	@echo "============================================================"
 	@echo ""
+
+# Ouvre un shell interactif dans le container (affiche le guide START_HERE).
+shell:
+	docker compose -f $(COMPOSE_FILE) exec mcunet bash
+
+# Lance un exercice sans entrer dans le shell.  Ex :  make run EX=02
+run:
+	docker compose -f $(COMPOSE_FILE) exec mcunet bash -lc 'python exercises/$(EX)_*.py'
+
+# Verifie l'environnement en executant l'exercice 00.
+check:
+	docker compose -f $(COMPOSE_FILE) exec mcunet python exercises/00_setup_check.py
+	@echo "Setup check OK"
 
 stop:
 	docker compose -f $(COMPOSE_FILE) down
-
-check:
-	docker compose -f $(COMPOSE_FILE) exec mcunet \
-		jupyter nbconvert --to notebook --execute \
-		/workspace/notebooks/00_setup_check.ipynb \
-		--output /tmp/00_setup_check_output.ipynb
-	@echo "Setup check OK"
 
 clean:
 	docker compose -f $(COMPOSE_FILE) down -v --rmi all --remove-orphans

@@ -3,14 +3,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Jupyter
-.ipynb_checkpoints/
-
 # macOS
 .DS_Store
 
 # Donnees (generees par Docker)
 data/
+
+# Figures generees par les exercices (on garde le dossier, pas son contenu)
+outputs/*
+!outputs/.gitkeep
 
 # Modeles TFLite a la racine
 *.tflite
@@ -28,3 +29,6 @@ venv/
 
 # Logs
 *.log
+
+# Autres
+.claude
